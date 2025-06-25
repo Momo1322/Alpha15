@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tratak + Focus Game</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 { margin-bottom: 1rem; }
+
+    .dot {
+      width: 20px;
+      height: 20px;
+      background-color: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 12px 6px #fff;
+      animation: pulse 2s infinite;
+      margin: 1rem 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 12px 6px #fff; }
+      50% { box-shadow: 0 0 30px 12px #fff; }
+    }
+
+    canvas {
+      background: #111;
+      border: 2px solid #444;
+      margin-top: 1rem;
+    }
+
+    .back-btn {
+      color: #ccc;
+      text-decoration: none;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Focus Practice</h1>
+  <div class="dot"></div>
+  <p>Try to focus on the dot glowing in white. If you have less focus then you will be disturbed by the deadly blue ball...</p>
+
+  <canvas id="gameCanvas" width="280" height="280"></canvas>
+
+  <a class="back-btn" href="index.html">← Back to Home</a>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let x = canvas.width / 2;
+    let y = canvas.height / 2;
+    let dx = 2;
+    let dy = 3;
+    const radius = 10;
+
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fillStyle = "#0ff";
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBall();
+
+      if (x + dx > canvas.width - radius || x + dx < radius) dx = -dx;
+      if (y + dy > canvas.height - radius || y + dy < radius) dy = -dy;
+
+      x += dx;
+      y += dy;
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+  </script>
+</body>
+</html>
