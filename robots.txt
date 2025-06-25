@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://momo1322.github.io/Alpha15/sitemap.xml
