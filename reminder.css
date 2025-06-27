@@ -1,0 +1,55 @@
+body {
+    background-color: #111;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+    padding: 2rem;
+}
+
+.container {
+    max-width: 500px;
+    margin: auto;
+}
+
+button {
+    padding: 0.8rem 1.2rem;
+    margin: 1rem;
+    font-size: 1rem;
+    background-color: #ffd54f;
+    color: #111;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.counter-container {
+    margin-top: 2rem;
+    position: relative;
+    display: inline-block;
+}
+
+.counter-container span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+}
+
+.glow {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(255, 192, 203, 0.2);
+    animation: glowFade 2s forwards;
+    z-index: 1000;
+}
+
+.hidden {
+    display: none;
+}
+
+@keyframes glowFade {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
