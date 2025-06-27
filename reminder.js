@@ -7,36 +7,36 @@ const glow = document.getElementById('glowEffect');
 const audio = document.getElementById('radhaSound');
 const intervalInput = document.getElementById('intervalInput');
 
-let count = parseInt(localStorage.getItem('japCount')) || 108;
 let intervalID;
+const maxJaps = 108;
 
-function getMax() {
-  return 108;
+// Load state depending on reverse mode
+function getInitialCount() {
+  const saved = localStorage.getItem('japCount');
+  if (saved !== null) return parseInt(saved);
+  return reverse.checked ? maxJaps : 0;
 }
+
+let count = getInitialCount();
+updateUI();
 
 function updateUI() {
   countText.textContent = count;
-  const percent = reverse.checked ? (getMax() - count) / getMax() : count / getMax();
+  const percent = reverse.checked
+      ? (maxJaps - count) / maxJaps
+      : count / maxJaps;
   ring.style.strokeDashoffset = 339 - (339 * percent);
-}
-
-function saveCounter() {
   localStorage.setItem('japCount', count);
 }
 
 function resetCounter() {
-  count = reverse.checked ? 108 : 0;
-  saveCounter();
+  count = reverse.checked ? maxJaps : 0;
   updateUI();
 }
 
 japBtn.onclick = () => {
-  if (reverse.checked) {
-    if (count > 0) count--;
-  } else {
-    count++;
-  }
-  saveCounter();
+  if (reverse.checked && count > 0) count--;
+  else if (!reverse.checked) count++;
   updateUI();
 };
 
@@ -65,12 +65,16 @@ function getState() {
 
 function restartInterval() {
   if (intervalID) clearInterval(intervalID);
-  const intervalMs = Math.max(parseInt(intervalInput.value || 5), 1) * 60000;
-  intervalID = setInterval(triggerReminder, intervalMs);
+  const mins = Math.max(parseInt(intervalInput.value || 5), 1);
+  intervalID = setInterval(triggerReminder, mins * 60000);
 }
 
-intervalInput.addEventListener('change', restartInterval);
-reverse.addEventListener('change', resetCounter);
+// Recalculate count when mode flips
+reverse.addEventListener('change', () => {
+  count = reverse.checked ? maxJaps : 0;
+  updateUI();
+});
 
-updateUI();
+intervalInput.addEventListener('change', restartInterval);
+
 restartInterval();
