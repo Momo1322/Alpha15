@@ -53,3 +53,17 @@ button {
     from { opacity: 1; }
     to { opacity: 0; }
 }
+
+.advanced {
+  margin-top: 2rem;
+  text-align: left;
+}
+.advanced summary {
+  cursor: pointer;
+  font-weight: bold;
+}
+.advanced button {
+  margin: 0.5rem 0.3rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
