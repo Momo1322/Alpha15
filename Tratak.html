@@ -1,96 +1,431 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tratak + Focus Game</title>
-  <style>
-    body {
-      background-color: #000;
-      color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-      padding: 2rem;
-      text-align: center;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tratak Kriya Practice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    h1 { margin-bottom: 1rem; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+        }
 
-    .dot {
-      width: 20px;
-      height: 20px;
-      background-color: #fff;
-      border-radius: 50%;
-      box-shadow: 0 0 12px 6px #fff;
-      animation: pulse 2s infinite;
-      margin: 1rem 0;
-    }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 600px;
+            width: 90%;
+        }
 
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 12px 6px #fff; }
-      50% { box-shadow: 0 0 30px 12px #fff; }
-    }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ffd700, #ffaa00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-    canvas {
-      background: #111;
-      border: 2px solid #444;
-      margin-top: 1rem;
-    }
+        .subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
 
-    .back-btn {
-      color: #ccc;
-      text-decoration: none;
-      margin-top: 2rem;
-      font-size: 0.9rem;
-    }
-  </style>
+        .candle-container {
+            position: relative;
+            margin: 2rem auto;
+            width: 200px;
+            height: 250px;
+        }
+
+        .candle {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 150px;
+            background: linear-gradient(to bottom, #f4f4f4, #e0e0e0);
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+        }
+
+        .wick {
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 10px;
+            background: #333;
+            border-radius: 1px;
+        }
+
+        .flame {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 45px;
+            background: radial-gradient(circle, #ffeb3b 0%, #ff9800 30%, #ff5722 60%, #d32f2f 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: flicker 2s ease-in-out infinite alternate;
+            filter: blur(1px);
+        }
+
+        .flame::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 25px;
+            background: radial-gradient(circle, #fff59d 0%, #ffeb3b 50%, transparent 70%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: flicker 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% { transform: translateX(-50%) rotate(-2deg) scale(1); }
+            25% { transform: translateX(-50%) rotate(1deg) scale(1.05); }
+            50% { transform: translateX(-50%) rotate(-1deg) scale(0.95); }
+            75% { transform: translateX(-50%) rotate(2deg) scale(1.02); }
+            100% { transform: translateX(-50%) rotate(-1deg) scale(1); }
+        }
+
+        .glow {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, rgba(255, 235, 59, 0.3) 0%, rgba(255, 152, 0, 0.2) 40%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+        }
+
+        .controls {
+            margin-top: 2rem;
+        }
+
+        .timer-display {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 1rem 0;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, #4caf50, #45a049);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .pause-btn {
+            background: linear-gradient(45deg, #ff9800, #f57c00);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .pause-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+        }
+
+        .reset-btn {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: white;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+        }
+
+        .time-selector {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .time-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .time-btn:hover, .time-btn.active {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+            color: #ffd700;
+        }
+
+        .instructions {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border-left: 4px solid #ffd700;
+        }
+
+        .instructions h3 {
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+
+        .instructions ul {
+            text-align: left;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .session-complete {
+            background: linear-gradient(45deg, #4caf50, #45a049);
+            padding: 1rem;
+            border-radius: 15px;
+            margin-top: 1rem;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .timer-display {
+                font-size: 2.5rem;
+            }
+            
+            .timer-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                min-width: 150px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Focus Practice</h1>
-  <div class="dot"></div>
-  <p>Try to focus on the dot glowing in white. If you have less focus then you will be disturbed by the deadly blue ball...</p>
+    <div class="container">
+        <h1>Tratak Kriya</h1>
+        <p class="subtitle">Yogic Gazing Meditation • Focus on the flame to enhance concentration and clarity</p>
+        
+        <div class="candle-container">
+            <div class="glow"></div>
+            <div class="flame"></div>
+            <div class="wick"></div>
+            <div class="candle"></div>
+        </div>
 
-  <canvas id="gameCanvas" width="280" height="280"></canvas>
+        <div class="controls">
+            <div class="timer-display" id="timerDisplay">05:00</div>
+            
+            <div class="time-selector">
+                <button class="time-btn active" onclick="setTime(300, this)">5 min</button>
+                <button class="time-btn" onclick="setTime(600, this)">10 min</button>
+                <button class="time-btn" onclick="setTime(900, this)">15 min</button>
+                <button class="time-btn" onclick="setTime(1200, this)">20 min</button>
+                <button class="time-btn" onclick="setTime(1800, this)">30 min</button>
+            </div>
+            
+            <div class="timer-controls">
+                <button class="start-btn" id="startBtn" onclick="startTimer()">Start</button>
+                <button class="pause-btn hidden" id="pauseBtn" onclick="pauseTimer()">Pause</button>
+                <button class="reset-btn" id="resetBtn" onclick="resetTimer()">Reset</button>
+            </div>
+        </div>
 
-  <a class="back-btn" href="index.html">← Back to Home</a>
+        <div class="instructions">
+            <h3>How to Practice Tratak Kriya:</h3>
+            <ul>
+                <li>Sit comfortably with your spine straight</li>
+                <li>Position yourself 3-4 feet away from the screen</li>
+                <li>Relax your entire body and breathe naturally</li>
+                <li>Gaze steadily at the flame without blinking</li>
+                <li>When tears form, close your eyes and visualize the flame</li>
+                <li>Repeat this process throughout your session</li>
+                <li>End with a few minutes of closed-eye visualization</li>
+            </ul>
+        </div>
 
-  <script>
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
+        <div id="completionMessage" class="session-complete hidden">
+            <h3>🕉️ Session Complete!</h3>
+            <p>Well done! You've completed your Tratak Kriya practice. Take a moment to rest your eyes and reflect on the experience.</p>
+        </div>
+    </div>
 
-    let x = canvas.width / 2;
-    let y = canvas.height / 2;
-    let dx = 2;
-    let dy = 3;
-    const radius = 10;
+    <script>
+        let timer;
+        let totalSeconds = 300; // 5 minutes default
+        let currentSeconds = totalSeconds;
+        let isRunning = false;
+        let isPaused = false;
 
-    function drawBall() {
-      ctx.beginPath();
-      ctx.arc(x, y, radius, 0, Math.PI * 2);
-      ctx.fillStyle = "#0ff";
-      ctx.fill();
-      ctx.closePath();
-    }
+        function updateDisplay() {
+            const minutes = Math.floor(currentSeconds / 60);
+            const seconds = currentSeconds % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
 
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawBall();
+        function setTime(seconds, buttonElement) {
+            if (isRunning) return;
+            
+            // Update active button
+            document.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active'));
+            buttonElement.classList.add('active');
+            
+            totalSeconds = seconds;
+            currentSeconds = seconds;
+            updateDisplay();
+            hideCompletionMessage();
+        }
 
-      if (x + dx > canvas.width - radius || x + dx < radius) dx = -dx;
-      if (y + dy > canvas.height - radius || y + dy < radius) dy = -dy;
+        function startTimer() {
+            if (isPaused) {
+                isPaused = false;
+            } else {
+                currentSeconds = totalSeconds;
+            }
+            
+            isRunning = true;
+            document.getElementById('startBtn').classList.add('hidden');
+            document.getElementById('pauseBtn').classList.remove('hidden');
+            hideCompletionMessage();
+            
+            timer = setInterval(() => {
+                currentSeconds--;
+                updateDisplay();
+                
+                if (currentSeconds <= 0) {
+                    completeSession();
+                }
+            }, 1000);
+        }
 
-      x += dx;
-      y += dy;
+        function pauseTimer() {
+            isRunning = false;
+            isPaused = true;
+            clearInterval(timer);
+            document.getElementById('startBtn').classList.remove('hidden');
+            document.getElementById('pauseBtn').classList.add('hidden');
+        }
 
-      requestAnimationFrame(draw);
-    }
+        function resetTimer() {
+            isRunning = false;
+            isPaused = false;
+            clearInterval(timer);
+            currentSeconds = totalSeconds;
+            updateDisplay();
+            document.getElementById('startBtn').classList.remove('hidden');
+            document.getElementById('pauseBtn').classList.add('hidden');
+            hideCompletionMessage();
+        }
 
-    draw();
-  </script>
+        function hideCompletionMessage() {
+            document.getElementById('completionMessage').classList.add('hidden');
+        }
+
+        function completeSession() {
+            isRunning = false;
+            isPaused = false;
+            clearInterval(timer);
+            document.getElementById('startBtn').classList.remove('hidden');
+            document.getElementById('pauseBtn').classList.add('hidden');
+            document.getElementById('completionMessage').classList.remove('hidden');
+            
+            // Simple completion notification
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('Tratak Kriya Session Complete!', {
+                    body: 'Your meditation session has finished. Take a moment to rest.',
+                    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjRkZENzAwIi8+Cjwvc3ZnPg=='
+                });
+            }
+        }
+
+        // Request notification permission on page load
+        window.addEventListener('load', () => {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        });
+    </script>
 </body>
 </html>
