@@ -2,51 +2,342 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
   <meta name="description" content="A minimalist suite blending reflex training with focused tools. Includes mental focus modules and slope gameplay." />
   <title>Alpha15 – Reflex Suite by momo1322</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    body { font-family: sans-serif; background: #f0f0f0; margin: 0; }
-    .hero { background: black; color: white; padding: 2em; text-align: center; }
-    .play-btn { display: inline-block; margin: 1em; padding: 0.8em 1.2em; background: #007BFF; color: white; text-decoration: none; border-radius: 5px; }
-    .apps-section { padding: 2em; text-align: center; }
-    .hidden-zone { display: none; margin-top: 2em; }
-    iframe { max-width: 100%; border: none; }
-    details { margin-top: 1em; text-align: left; display: inline-block; max-width: 400px; background: #fff; padding: 1em; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    summary { font-weight: bold; cursor: pointer; }
+    :root{
+      --bg: #f0f0f0;
+      --fg: #0f0f0f;
+      --muted: #6b7280;
+      --btn: #007BFF;
+      --btn-hover: #0056b3;
+      --card: #ffffff;
+      --shadow: 0 6px 18px rgba(0,0,0,0.08);
+      --radius: 12px;
+      --space: clamp(12px, 2vw, 20px);
+      --space-lg: clamp(20px, 4vw, 40px);
+      --maxw: 1100px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.5;
+    }
+
+    .hero {
+      background: #000;
+      color: #fff;
+      padding: calc(var(--space-lg) * 1.2) var(--space);
+      text-align: center;
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      letter-spacing: 0.3px;
+    }
+    .hero p.sub {
+      margin: 6px 0;
+      color: #cbd5e1;
+      font-size: clamp(0.9rem, 2.3vw, 1rem);
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: var(--space-lg) var(--space);
+    }
+
+    .play-btn,
+    .ui-btn {
+      display: inline-block;
+      margin: 10px;
+      padding: 0.8em 1.1em;
+      background: var(--btn);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 10px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 180ms ease, transform 120ms ease;
+      box-shadow: var(--shadow);
+    }
+    .play-btn:hover, .ui-btn:hover { background: var(--btn-hover); }
+    .ui-btn:active { transform: translateY(1px); }
+
+    .apps-section h2 {
+      text-align: center;
+      margin: 0 0 var(--space);
+      font-size: clamp(1.2rem, 3.2vw, 1.8rem);
+    }
+
+    /* Responsive embed (16:9) */
+    .embed {
+      position: relative;
+      width: 100%;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #000;
+      box-shadow: var(--shadow);
+      aspect-ratio: 16 / 9;
+    }
+    .embed iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* Zones and cards */
+    .zone { margin-top: var(--space-lg); }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: var(--space);
+      box-shadow: var(--shadow);
+    }
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: clamp(1.05rem, 2.8vw, 1.3rem);
+    }
+
+    details {
+      margin-top: 10px;
+      text-align: left;
+      display: block;
+      width: 100%;
+      max-width: 520px;
+      background: #fff;
+      padding: 12px 14px;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+    }
+    summary { font-weight: 700; cursor: pointer; }
+
+    /* Touch-friendly controls */
+    .controls {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      justify-items: center;
+      margin-top: var(--space);
+    }
+    .controls .ui-btn { width: 100%; text-align: center; }
+
+    /* Collapsible animation */
+    .collapsible {
+      overflow: hidden;
+      height: 0;
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: height 280ms ease, opacity 220ms ease, transform 220ms ease;
+      will-change: height, opacity, transform;
+    }
+    .collapsible.is-open {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Footer tips */
+    .tips {
+      color: var(--muted);
+      font-size: 0.95rem;
+      text-align: center;
+      margin-top: var(--space);
+    }
+
+    /* Media queries */
+    @media (max-width: 480px) {
+      .play-btn { width: 100%; }
+      .controls { grid-template-columns: 1fr; }
+      details { max-width: 100%; }
+      .hero { text-align: left; }
+      .hero p.sub { font-size: 0.95rem; }
+    }
+    @media (min-width: 481px) and (max-width: 900px) {
+      .controls { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 901px) {
+      .embed { max-width: 960px; margin: 0 auto; }
+      details { max-width: 640px; }
+    }
+
+    /* Motion & focus preferences */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+    :focus-visible {
+      outline: 3px solid #94a3b8;
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
-  <div class="hero">
+  <header class="hero">
     <h1>Reflex Suite</h1>
     <p>Train focus and reaction while unlocking hidden modules 🧩</p>
-    <p class="sub">Press <strong>Ctrl+Shift+S</strong> to toggle hidden zones.</p>
-    <a class="play-btn" href="#apps">▶️ Jump into Reflex Mode</a>
-  </div>
+    <p class="sub">Keyboard: Ctrl+Shift+S → Focus Modules, Ctrl+Alt+O → Bhakti Website</p>
+    <a class="play-btn" href="#apps" aria-label="Jump into Reflex Mode">▶️ Jump into Reflex Mode</a>
+  </header>
 
-  <section id="apps" class="apps-section">
-    <h2>Embedded Reflex App:</h2>
-    <iframe src="https://y8.com/embed/slope" style="width: 960px; height: 641px;"></iframe>
+  <main class="container">
+    <section id="apps" class="apps-section" aria-labelledby="apps-title">
+      <h2 id="apps-title">Embedded reflex app</h2>
 
-    <div class="hidden-zone" id="spiritual-zone">
-      <h3>🧘 Hidden Focus Modules</h3>
-      <details>
-        <summary>Tratak Kriya</summary>
-        <a href="Tratak.html" class="play-btn">Launch Tratak</a>
-      </details>
-      <details>
-        <summary>Radha Naam Jap Counter</summary>
-        <a href="https://app--chant-counter-89abd2c8.base44.app/Counter" class="play-btn">Open Jap Counter</a>
-      </details>
-    </div>
-  </section>
+      <div class="embed" role="group" aria-label="Slope Game">
+        <iframe
+          src="https://y8.com/embed/slope"
+          title="Slope Game"
+          loading="lazy"
+          allowfullscreen
+          referrerpolicy="no-referrer"
+        ></iframe>
+      </div>
+
+      <!-- Touch-friendly controls -->
+      <div class="controls" aria-label="Quick toggles">
+        <button
+          type="button"
+          class="ui-btn"
+          id="toggle-spiritual"
+          aria-controls="spiritual-zone"
+          aria-expanded="false"
+        >
+          🧘 Show/Hide Focus Modules
+        </button>
+        <button
+          type="button"
+          class="ui-btn"
+          id="toggle-external"
+          aria-controls="EX"
+          aria-expanded="false"
+        >
+          🌐 Show/Hide Bhakti Website
+        </button>
+      </div>
+
+      <div class="zone">
+        <div class="card collapsible" id="spiritual-zone" hidden>
+          <h3>🧘 Hidden focus modules</h3>
+          <details>
+            <summary>Tratak Kriya</summary>
+            <a href="Tratak.html" class="play-btn" aria-label="Launch Tratak Kriya">Launch Tratak</a>
+          </details>
+          <details>
+            <summary>Radha Naam Jap Counter</summary>
+            <a href="https://app--chant-counter-89abd2c8.base44.app/Counter" class="play-btn" aria-label="Open Jap Counter">Open Jap Counter</a>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="additional-apps" class="zone" aria-labelledby="extra-title">
+      <div class="card collapsible" id="EX" hidden>
+        <h3 id="extra-title">Bhakti apps collection</h3>
+        <p><b>If you want to download some bhakti apps, you can check this section</b></p>
+        <details>
+          <summary>Bhakti Apps Website</summary>
+          <a href="https://github.com/Momo1322/Bhakti-Apps" class="play-btn" aria-label="Open Bhakti Apps GitHub">Open GitHub Website</a>
+        </details>
+      </div>
+    </section>
+
+    <p class="tips">
+      Tip: On touch devices, use the blue buttons above to reveal modules. Keyboard shortcuts still work on laptops.
+    </p>
+  </main>
 
   <script>
-    document.addEventListener('keydown', function(e) {
-      if (e.ctrlKey && e.shiftKey && e.code === 'KeyS') {
-        const zone = document.getElementById('spiritual-zone');
-        zone.style.display = zone.style.display === 'none' ? 'block' : 'none';
+    const $ = (sel) => document.querySelector(sel);
+    const spiritualZone = $('#spiritual-zone');
+    const externalZone = $('#EX');
+    const btnSpiritual = $('#toggle-spiritual');
+    const btnExternal = $('#toggle-external');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function openSection(el, btn) {
+      if (prefersReducedMotion) {
+        el.hidden = false;
+        btn?.setAttribute('aria-expanded', 'true');
+        return;
+      }
+      el.hidden = false;
+      el.style.height = '0px';
+      el.classList.add('is-open');
+      const target = el.scrollHeight;
+
+      requestAnimationFrame(() => {
+        el.style.height = target + 'px';
+      });
+
+      const onEnd = (ev) => {
+        if (ev.target !== el) return;
+        el.style.height = 'auto'; // allow content to grow naturally
+        el.removeEventListener('transitionend', onEnd);
+      };
+      el.addEventListener('transitionend', onEnd);
+      btn?.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeSection(el, btn) {
+      if (prefersReducedMotion) {
+        el.hidden = true;
+        btn?.setAttribute('aria-expanded', 'false');
+        return;
+      }
+      // Set fixed height to transition from
+      el.style.height = el.scrollHeight + 'px';
+      // Force reflow to ensure the height is taken into account
+      // eslint-disable-next-line no-unused-expressions
+      el.offsetHeight;
+      el.classList.remove('is-open');
+      el.style.height = '0px';
+
+      const onEnd = (ev) => {
+        if (ev.target !== el) return;
+        el.hidden = true;
+        el.style.height = '';
+        el.removeEventListener('transitionend', onEnd);
+      };
+      el.addEventListener('transitionend', onEnd);
+      btn?.setAttribute('aria-expanded', 'false');
+    }
+
+    function toggleSection(sectionEl, buttonEl) {
+      if (sectionEl.hidden) {
+        openSection(sectionEl, buttonEl);
+      } else {
+        closeSection(sectionEl, buttonEl);
+      }
+    }
+
+    // Click toggles (mobile/tablet/desktop)
+    btnSpiritual?.addEventListener('click', () => toggleSection(spiritualZone, btnSpiritual));
+    btnExternal?.addEventListener('click', () => toggleSection(externalZone, btnExternal));
+
+    // Keyboard shortcuts (desktop)
+    document.addEventListener('keydown', (e) => {
+      // Ctrl/Meta + Shift + S → Spiritual Zone
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === 'KeyS') {
+        e.preventDefault();
+        toggleSection(spiritualZone, btnSpiritual);
+      }
+      // Ctrl/Meta + Alt + O → External Zone
+      if ((e.ctrlKey || e.metaKey) && e.altKey && e.code === 'KeyO') {
+        e.preventDefault();
+        toggleSection(externalZone, btnExternal);
       }
     });
   </script>
